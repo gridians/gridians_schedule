@@ -1,23 +1,20 @@
 package com.schedule.github;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.schedule.github.dto.GithubResponseDto;
 import com.schedule.github.entity.Github;
-import com.schedule.github.repository.GithubRepository;
-import lombok.RequiredArgsConstructor;
+import com.schedule.utils.ApiUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.List;
-import java.util.Scanner;
 
 @Slf4j
-@Transactional
 public class GithubRequestThread implements Runnable{
+
+    private static final String GITHUB_USER_URL = "https://api.github.com/users/";
+    private static final String GITHUB_USER_EVENT = "/events/public?page=1&per_page=1";
+    private static final String GITHUB_USER_REPO = "/repos";
     private ObjectMapper objectMapper;
     private List<Github> githubs;
     public GithubRequestThread(List<Github> githubs, ObjectMapper objectMapper){
@@ -27,35 +24,14 @@ public class GithubRequestThread implements Runnable{
 
     @Override
     public void run() {
-        HttpURLConnection connection;
         for(Github github : githubs){
             try {
-                URL url = new URL("https://api.github.com/users/" + github.getName());
-                connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("GET");
-                connection.setDoOutput(true);
+                String githubUserResponse = ApiUtils.request(GITHUB_USER_URL + github.getName(), "GET");
 
-                if (connection.getResponseCode() / 100 != 2) {
-                    InputStream errorStream = connection.getErrorStream();
-                    Scanner s = new Scanner(errorStream).useDelimiter("\\A");
-                    String error = s.hasNext() ? s.next() : "";
-
-                    System.out.println(error);
-                    throw new RuntimeException("Bad Request Exception");
-                }
-
-                InputStream responseStream = connection.getInputStream();
-
-                Scanner s = new Scanner(responseStream).useDelimiter("\\A");
-                String response = s.hasNext() ? s.next() : "";
-
-
-                GithubResponseDto responseDto = objectMapper.readValue(response, GithubResponseDto.class);
-
+                GithubResponseDto responseDto = objectMapper.readValue(githubUserResponse, GithubResponseDto.class);
 
                 Github findGithub = GithubResponseDto.convert(responseDto);
-                github.update(findGithub);
-                Scheduler.saveGithubInfo(github);
+                Scheduler.updateGithub(github, findGithub);
             } catch (Exception e){
                 e.printStackTrace();
                 throw new RuntimeException("thread exception");

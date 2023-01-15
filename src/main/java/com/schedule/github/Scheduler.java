@@ -7,23 +7,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
 @Component
+@Transactional
 @RequiredArgsConstructor
 public class Scheduler {
 
     private final ObjectMapper objectMapper;
     private final GithubRepository githubRepository;
-    private static List<Github> resultGithubs = new ArrayList<>();
 
-    public static void saveGithubInfo(Github github){
-        resultGithubs.add(github);
+    public static void updateGithub(Github github, Github updateGithub) {
+        github.update(updateGithub);
     }
 
     @Scheduled(fixedDelay = 300000)
@@ -42,8 +41,6 @@ public class Scheduler {
                 thread.join();
             } catch (Exception exception) {
             }
-            githubRepository.saveAll(githubs);
-            resultGithubs.clear();
         }
     }
 }

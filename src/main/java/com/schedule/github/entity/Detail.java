@@ -27,12 +27,6 @@ public class Detail {
     private Long followers;
     private Long following;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
-
     private String status;
     @Column(name = "status_message")
     private String statusMessage;
@@ -42,5 +36,8 @@ public class Detail {
     @Column(name = "committed_at")
     private LocalDate committedAt;
 
+    @OneToOne
+    @JoinColumn(name = "github_id")
+    private Github github;
 
 }

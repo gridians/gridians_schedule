@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 public class Github {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "github_id")
     private Long id;
 
     private String name;
@@ -44,8 +44,14 @@ public class Github {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
-
     public void update(Github github) {
         this.name = github.name;
+        this.profileImageUrl = github.profileImageUrl;
+        this.url = github.url;
+        this.followersUrl = github.followersUrl;
+        this.followingUrl = github.followingUrl;
+        this.location = github.location;
+        this.createdAt = github.createdAt;
+        this.modifiedAt = github.modifiedAt;
     }
 }
