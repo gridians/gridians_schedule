@@ -13,8 +13,8 @@ public class GithubResponseDto {
     private Long id;
     private String avatar_url;
     private String html_url;
-    private String followers_url;
-    private String following_url;
+    private Integer followers;
+    private Integer following;
     private String location;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
@@ -25,8 +25,8 @@ public class GithubResponseDto {
                 .name(githubResponseDto.login)
                 .profileImageUrl(githubResponseDto.avatar_url)
                 .url(githubResponseDto.html_url)
-                .followingUrl(githubResponseDto.following_url)
-                .followersUrl(githubResponseDto.followers_url)
+                .followings(githubResponseDto.following)
+                .followers(githubResponseDto.followers)
                 .createdAt(githubResponseDto.created_at)
                 .location(githubResponseDto.location)
                 .modifiedAt(githubResponseDto.updated_at)

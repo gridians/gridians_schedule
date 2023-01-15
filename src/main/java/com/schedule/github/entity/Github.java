@@ -1,13 +1,11 @@
 package com.schedule.github.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -28,11 +26,19 @@ public class Github {
 
     private String url;
 
-    @Column(name = "followers_url")
-    private String followersUrl;
+    @Column(name = "followers")
+    private Integer followers;
 
-    @Column(name = "following_url")
-    private String followingUrl;
+    @Column(name = "followings")
+    private Integer followings;
+
+    @Setter
+    @Column(name = "recent_commit_message")
+    private String recentCommitMessage;
+
+    @Setter
+    @Column(name = "recent_commit_at")
+    private LocalDateTime recentCommitAt;
 
     private String location;
 
@@ -48,8 +54,10 @@ public class Github {
         this.name = github.name;
         this.profileImageUrl = github.profileImageUrl;
         this.url = github.url;
-        this.followersUrl = github.followersUrl;
-        this.followingUrl = github.followingUrl;
+        this.followers = github.followers;
+        this.followings = github.followings;
+        this.recentCommitMessage = github.recentCommitMessage;
+        this.recentCommitAt = github.recentCommitAt;
         this.location = github.location;
         this.createdAt = github.createdAt;
         this.modifiedAt = github.modifiedAt;
