@@ -11,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 public class GithubRequestThread implements Runnable{
@@ -30,8 +32,9 @@ public class GithubRequestThread implements Runnable{
     public void run() {
         for(Github github : githubs){
             try {
-                String githubUserResponse = ApiUtils.request(GITHUB_USER_URL + github.getName(), "GET");
-                String githubEventResponse = ApiUtils.request(GITHUB_USER_URL + github.getName() + GITHUB_USER_EVENT, "GET");
+                Map<String, String> headers = new HashMap<>();
+                String githubUserResponse = ApiUtils.request(GITHUB_USER_URL + github.getLogin(), "GET");
+                String githubEventResponse = ApiUtils.request(GITHUB_USER_URL + github.getLogin() + GITHUB_USER_EVENT, "GET");
 
                 JSONArray eventResponseList = new JSONArray(githubEventResponse);
                 String recentCommitMessage = eventResponseList

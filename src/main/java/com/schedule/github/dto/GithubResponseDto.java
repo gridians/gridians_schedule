@@ -10,11 +10,12 @@ import java.time.LocalDateTime;
 @Setter
 public class GithubResponseDto {
     private String login;
+    private String name;
     private Long id;
     private String avatar_url;
     private String html_url;
-    private Integer followers;
-    private Integer following;
+    private Long followers;
+    private Long following;
     private String location;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
@@ -22,7 +23,8 @@ public class GithubResponseDto {
     public static Github convert(GithubResponseDto githubResponseDto) {
         Github github = Github.builder()
                 .id(githubResponseDto.id)
-                .name(githubResponseDto.login)
+                .name(githubResponseDto.name)
+                .login(githubResponseDto.login)
                 .profileImageUrl(githubResponseDto.avatar_url)
                 .url(githubResponseDto.html_url)
                 .followings(githubResponseDto.following)

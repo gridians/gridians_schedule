@@ -1,5 +1,6 @@
 package com.schedule.github.entity;
 
+import com.schedule.user.User;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -20,6 +21,7 @@ public class Github {
     private Long id;
 
     private String name;
+    private String login;
 
     @Column(name = "profile_image_url")
     private String profileImageUrl;
@@ -27,10 +29,10 @@ public class Github {
     private String url;
 
     @Column(name = "followers")
-    private Integer followers;
+    private Long followers;
 
     @Column(name = "followings")
-    private Integer followings;
+    private Long followings;
 
     @Setter
     @Column(name = "recent_commit_message")
@@ -50,8 +52,13 @@ public class Github {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
+    @OneToOne
+    @JoinColumn(name = "user")
+    private User user;
+
     public void update(Github github) {
         this.name = github.name;
+        this.login = github.login;
         this.profileImageUrl = github.profileImageUrl;
         this.url = github.url;
         this.followers = github.followers;

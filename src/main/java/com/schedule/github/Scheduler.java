@@ -18,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Scheduler {
 
+    private static final int THREAD_MAX = 10;
     private final ObjectMapper objectMapper;
     private final GithubRepository githubRepository;
 
@@ -26,12 +27,20 @@ public class Scheduler {
     }
 
     @Scheduled(fixedDelay = 300000)
+//    @Scheduled(fixedDelay = 10000)
     public void getGithubUserInfo() throws Exception {
         List<Github> githubs = githubRepository.findAll();
 
         List<Thread> threads = new ArrayList<>();
-        for (int i = 0; i < githubs.size(); i += 10) {
-            Thread thread = new Thread(new GithubRequestThread(githubs.subList(i, 1), objectMapper));
+        int i = 0;
+        for (i = 0; i < githubs.size(); i += THREAD_MAX) {
+            if(i < githubs.size() && githubs.size() < i + THREAD_MAX) {
+                Thread thread = new Thread(new GithubRequestThread(githubs.subList(i, githubs.size() - i), objectMapper));
+                thread.start();
+                threads.add(thread);
+                break;
+            }
+            Thread thread = new Thread(new GithubRequestThread(githubs.subList(i, THREAD_MAX), objectMapper));
             thread.start();
             threads.add(thread);
         }
